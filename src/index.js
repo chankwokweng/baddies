@@ -15,7 +15,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Router>
       {/* <CurrentUserProvider> */}
         <ScrollToTop />
@@ -23,7 +23,7 @@ root.render(
         <App />
       {/* </CurrentUserProvider> */}
     </Router>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change

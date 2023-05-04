@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfileCard } from "../../components"
 import { dataServiceGetProfile, dataServiceSaveProfile, dataServiceUploadFile } from "../../services/dataService";
 import { useTitle } from "../../hooks/useTitle";
+import { levelOfPlayList } from "../../constants";
 
 export const ProfilePage = () => {
   useTitle("Profile");
@@ -56,7 +57,7 @@ export const ProfilePage = () => {
         })
       }
       _getProfile();
-    },[]);
+    });
 
     const handleChange = (event) => {
       const name = event.target.name;
@@ -76,14 +77,14 @@ export const ProfilePage = () => {
   }
 
   async function changePicture(fileObject) {
-    console.log("changePicture: ");
-    console.log(fileObject);
+    // console.log("changePicture: ");
+    // console.log(fileObject);
     try {
-      let newURL = await dataServiceUploadFile(uid, fileObject);
-        console.log("changePicture: 2");
-        console.log(newURL);
+      let newURL = await dataServiceUploadFile(uid, "profiles", fileObject);
+        // console.log("changePicture: 2");
+        // console.log(newURL);
         setProfile( {...profile, userPhotoURL:newURL});
-        console.log(profile);
+        // console.log(profile);
     
       } catch(e) {
         alert("Exception - changePicture : " + e.message)
@@ -95,7 +96,6 @@ export const ProfilePage = () => {
 
   return (
     <div className="m-3 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 ml-2">
-
       <form className="ml-2" onSubmit={saveToDB}>
       <div className="relative h-100 w-100" >
           <span className="absolute top-4 left-2 px-2 bg-orange-500 bg-opacity-90 text-white rounded">My Info</span>
@@ -139,14 +139,9 @@ export const ProfilePage = () => {
 
               <select type="text" name="userLevelOfPlay" className="mb-6 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-10/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={profile.userLevelOfPlay} required
                onChange={handleChange}>
-                <option> Select your level </option>
-                ${profile.userLevelOfPlay}=="LB? "": <option value="LB">Low Beginner</option> 
-                <option  value="HB">High Beginner</option>
-                <option  value="LI">Low Intermediate</option>
-                <option  value="HI">High Intermediate</option>
-                <option  value="Adv">Advanced</option>
-                <option  value="Prof">Professional</option>
-                <option  value="UN">Not sure</option>
+                { levelOfPlayList.map( (l)=>
+                    <option value={l.value}>{l.desc}</option> 
+                )}
               </select>      
             </div>
             <div>

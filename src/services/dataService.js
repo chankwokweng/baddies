@@ -1,5 +1,5 @@
 // import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, setDoc, addDoc, getDoc, deleteDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, collectionGroup, getDocs, setDoc, addDoc, getDoc, deleteDoc, doc, query, where } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../firebase/config";
 import { toast } from 'react-toastify';
@@ -11,8 +11,29 @@ function getSession(){
 }
 
 //---------------- FILES
+function generateHexString(length) {
+    // Use crypto.getRandomValues if available
+    if (
+      typeof crypto !== 'undefined' 
+      && typeof crypto.getRandomValues === 'function'
+    ) {
+      var tmp = new Uint8Array(Math.max((~~length)/2));
+      crypto.getRandomValues(tmp);
+      return Array.from(tmp)
+        .map(n => ('0'+n.toString(16)).substr(-2))
+        .join('')
+        .substr(0,length);
+    }
+  
+    // fallback to Math.getRandomValues
+    var ret = "";
+    while (ret.length < length) {
+      ret += Math.random().toString(16).substring(2);
+    }
+    return ret.substring(0,length);
+  }
 
-export async function dataServiceUploadFile(id, fileObject){
+export async function dataServiceUploadFile(id, folder, fileObject){
     // console.log ("dataServiceUploadFile : ");
     // console.log (fileObject);
     try {
@@ -22,45 +43,76 @@ export async function dataServiceUploadFile(id, fileObject){
             contentType: 'image/jpeg',
           };
 
+        if (id==="") 
+            id = generateHexString(20);
         // console.log ("dataServiceUploadFile : 1");
         // console.log (fileObject.target.files);
         let filename = fileObject.target.files[0].name;
         if (filename.indexOf(".jpg")) {
-            filename = "profiles/"+id+".jpg";
+            filename = folder+"/"+id+".jpg";
             metadata.contentType =  'image/jpg';
         } else if (filename.indexOf(".jpeg")) {
-            filename = "profiles/"+id+".jpeg";
+            filename = folder+"/"+id+".jpeg";
         } else if (filename.indexOf(".png")) {
-            filename = "profiles/"+id+".png";
+            filename = folder+"/"+id+".png";
             metadata.contentType =  'image/png';
         }
     
         const storageRef = ref(storage, filename);
-        console.log ("dataServiceUploadFile : 2a - " + filename);
-        console.log ("dataServiceUploadFile : 2b - " + storageRef);
+        // console.log ("dataServiceUploadFile : 2a - " + filename);
+        // console.log ("dataServiceUploadFile : 2b - " + storageRef);
         uploadBytes(storageRef, fileObject.target.files[0], metadata)
         .then((snapshot) => {
-            console.log('Uploaded a blob or file! - ');
-            console.log('Getting newURL ');
+            // console.log('Uploaded a blob or file! - ');
+            // console.log('Getting newURL ');
             getDownloadURL(ref(storage, filename)).then ( (newURL) => {
-                console.log ("dataServiceUploadFile : 2c - " + newURL);
+                // console.log ("dataServiceUploadFile : 2c - " + newURL);
                 resolve(newURL);
+            });
         });
-
-        });
-        // console.log ("dataServiceUploadFile : 3");
-        // return ("");
-
-        // await setDoc(doc(db, "Users", uid), {
-        //     uid: uid,
-        //     userEmail: email
-        // })     
-    })
-    return (await myPromise);
-
+        })
+        return (await myPromise);
     } catch (e) {
         alert ("Exception: dataServiceUploadFile -" + e.message);
         return("");
+    }
+}
+
+//---------------- GROUPS
+
+export async function dataServiceGetGroups(uid){
+// console.log("getUsers");
+
+    const groups = query(collection(db, "Groups"), where("groupOwnerID", "==", uid));
+    const querySnapShot = await getDocs(groups);
+    let result =[];
+    querySnapShot.forEach(document => {
+            console.log(document.data());
+            result.push(document.data());
+    });
+    return result;
+}
+
+export async function dataServiceSaveGroup(uid, group){
+    // console.log("dataService_saveProfile");
+    // console.log(profile);
+    
+    try {
+        console.log("saveGroup-1");
+        if (!group.groupID) {                        //new group
+            console.log("saveGroup-2");
+            group.groupID = generateHexString(20);
+            group.groupOwnerID = uid;
+        }
+        console.log("saveGroup-3");
+        console.log(group);
+        const docRef = doc(db, "Groups", group.groupID);
+        await setDoc(docRef, group); 
+        toast("Group Saved!!!");
+        return true;
+    } catch (e) {
+        alert("Error during save group:" + e.message);
+        return false;
     }
 }
 
