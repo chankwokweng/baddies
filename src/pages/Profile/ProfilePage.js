@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ProfileCard } from "../../components"
+// import { ProfileCard } from "../../components"
 import { dataServiceGetProfile, dataServiceSaveProfile, dataServiceUploadFile } from "../../services/dataService";
 import { useTitle } from "../../hooks/useTitle";
-import { levelOfPlayList } from "../../constants";
+import { constLevelOfPlayList } from "../../constants";
 
 export const ProfilePage = () => {
   useTitle("Profile");
@@ -139,8 +139,8 @@ export const ProfilePage = () => {
 
               <select type="text" name="userLevelOfPlay" className="mb-6 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-10/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={profile.userLevelOfPlay} required
                onChange={handleChange}>
-                { levelOfPlayList.map( (l)=>
-                    <option value={l.value}>{l.desc}</option> 
+                { constLevelOfPlayList.map( (l)=>
+                    <option key={l.value} value={l.value}>{l.desc}</option> 
                 )}
               </select>      
             </div>

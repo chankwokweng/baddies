@@ -3,7 +3,7 @@ import { collection, getDocs, setDoc, getDoc, doc, query, where } from "firebase
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/config";
 import { toast } from 'react-toastify';
-// import { authServiceGetCurrentUser } from "./";
+import { authServiceGetCurrentUser } from "./";
 
 function getSession(){
     const uid = JSON.parse(sessionStorage.getItem("uid"));
@@ -63,8 +63,8 @@ export async function dataServiceUploadFile(id, folder, fileObject){
         // console.log ("dataServiceUploadFile : 2b - " + storageRef);
         uploadBytes(storageRef, fileObject.target.files[0], metadata)
         .then((snapshot) => {
-            console.log('Uploaded a blob or file! - ');
-            console.log('Getting newURL ');
+            // console.log('Uploaded a blob or file! - ');
+            // console.log('Getting newURL ');
             getDownloadURL(ref(storage, filename)).then ( (newURL) => {
                 // console.log ("dataServiceUploadFile : 2c - " + newURL);
                 resolve(newURL);
@@ -169,7 +169,7 @@ export async function dataServiceGetProfile(profileID){
             };
         } catch (e) {
             alert("Error during get profile:" + e.message);
-            return false;
+            return null;
         }
 }
     

@@ -1,3 +1,3 @@
-export { authServiceGetCurrentUser, authServiceLogin, authServiceLoginGoogle, authServiceRegister, authServiceLogout } from "./authService";
+export { authServiceLogout } from "./authService";
 export { dataServiceGetUserSession, dataServiceGetUsers, dataServiceRegisterUser, dataServiceGetProfile, dataServiceSaveProfile,
     dataServiceUploadFile, dataServiceGetGroups } from "./dataService";

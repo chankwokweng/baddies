@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useTitle } from "../hooks/useTitle";
-import { authServiceRegister,dataServiceRegisterUser } from '../services';
-import { auth, googleAuthProvider } from "../firebase/config";
-import { signInWithPopup } from "firebase/auth";
+import { auth } from "../firebase/config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 
 export const Register = () => {
@@ -13,12 +12,10 @@ export const Register = () => {
   async function handleRegister(event){
     event.preventDefault();
     try{
-      const authDetail = {
         // name: event.target.name.value,
-        email: event.target.email.value,
-        password: event.target.password.value
-      }
-      const data = await authServiceRegister(authDetail);
+        const email = event.target.email.value;
+        const password = event.target.password.value;
+      const data = await createUserWithEmailAndPassword(auth, email, password);
       // console.log("register page");
       // console.log(data);
       // dataServiceRegisterUser(data);
@@ -29,18 +26,6 @@ export const Register = () => {
     }
   }
 
-  async function handleRegisterViaGoogle(event){
-    event.preventDefault();
-    try{
-      signInWithPopup(auth, googleAuthProvider).then((result) => {
-        localStorage.setItem("isAuth", true);
-        authServiceRegister(result.user.uid, result.user.email);
-        console.log(result);
-      })
-    } catch(error){
-      toast.error(error.message, {closeButton: true, position: "bottom-center"});
-    }
-  }
 
   return (
     <main className='dark:bg-gray-800'>
@@ -62,7 +47,6 @@ export const Register = () => {
           </div>
           <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register</button>
         </form>
-        <button onClick={handleRegisterViaGoogle} className="mt-3 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register via Google</button>
     </main>
   )
 }
