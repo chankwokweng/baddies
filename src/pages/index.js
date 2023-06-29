@@ -12,6 +12,8 @@ export { Register } from "./Register";
 export { ProfilePage } from "./Profile/ProfilePage";
 export { EventPage } from "./Event/EventPage";
 export { OrganizerPage } from "./Organizer/OrganizerPage";
+export { MemberPage } from "./Member/MemberPage";
+export { GroupPage } from "./Group/GroupPage";
 
 
 export { PageNotFound } from "./PageNotFound";

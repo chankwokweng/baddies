@@ -63,8 +63,8 @@ export async function dataServiceUploadFile(id, folder, fileObject){
         // console.log ("dataServiceUploadFile : 2b - " + storageRef);
         uploadBytes(storageRef, fileObject.target.files[0], metadata)
         .then((snapshot) => {
-            console.log('Uploaded a blob or file! - ');
-            console.log('Getting newURL ');
+            // console.log('Uploaded a blob or file! - ');
+            // console.log('Getting newURL ');
             getDownloadURL(ref(storage, filename)).then ( (newURL) => {
                 // console.log ("dataServiceUploadFile : 2c - " + newURL);
                 resolve(newURL);
@@ -113,6 +113,26 @@ export async function dataServiceSaveGroup(uid, group){
     }
 }
 
+export async function dataServiceGetGroup(groupID){
+    console.log("dataServiceGetGroup : ", groupID);
+    
+    try {
+        const docRef = doc(db, "Groups", groupID);
+        await getDoc(docRef).then(
+           (snap) => {
+                console.log("dataServiceGetGroup Data:");
+                console.log(snap.exists());
+                console.log(snap.data());
+                return(snap.data());
+           }
+        ); 
+        return null;
+    } catch (e) {
+        alert("Error during get group:" + e.message);
+        return null;
+    }
+}
+
 //---------------- USERS
 
 export async function dataServiceGetUserSession(){
@@ -134,7 +154,7 @@ export async function dataServiceGetUsers(){
 }
 export async function dataServiceRegisterUser(uid, email){
 // console.log("registerUser");
-// console.log(uid);
+// console.log(uid, email);
     try {
         // console.log("registerUser-1");
         // const docRef = doc(db, "Users", uid);
@@ -164,7 +184,7 @@ export async function dataServiceGetProfile(profileID){
                 return data;
             } else {
             // docSnap.data() will be undefined in this case
-                // console.log("dataServiceGetProfile-5 - No such document!");
+                console.log("dataServiceGetProfile-5 - No such document!");
                 return null;
             };
         } catch (e) {

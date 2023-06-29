@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useTitle } from "../hooks/useTitle";
 import { auth } from "../firebase/config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { dataServiceRegisterUser } from '../services/dataService'
 
 
 export const Register = () => {
@@ -18,9 +19,17 @@ export const Register = () => {
       const data = await createUserWithEmailAndPassword(auth, email, password);
       // console.log("register page");
       // console.log(data);
-      // dataServiceRegisterUser(data);
+      dataServiceRegisterUser(data.user.uid, data.user.email);
+      signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        //--- save to local storage
+        sessionStorage.setItem("uid", JSON.stringify(userCredential.user.uid));
 
-      data.uid ? navigate("/profile") : toast.error(data);
+        // console.log(userCredential);
+        userCredential.user.uid ? navigate("/profile") : toast.error("Register - Unable to login after register");
+        return (userCredential);
+      })
     } catch(error){
       toast.error(error.message, {closeButton: true, position: "bottom-center"});
     }

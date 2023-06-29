@@ -57,7 +57,7 @@ export const ProfilePage = () => {
         })
       }
       _getProfile();
-    });
+    },[uid]);
 
     const handleChange = (event) => {
       const name = event.target.name;
@@ -99,7 +99,7 @@ export const ProfilePage = () => {
       <form className="ml-2" onSubmit={saveToDB}>
       <div className="relative h-100 w-100" >
           <span className="absolute top-4 left-2 px-2 bg-orange-500 bg-opacity-90 text-white rounded">My Info</span>
-          <img onClick={changePicture} className="rounded-full max-h-20 mx-auto" src={profile.userPhotoURL} alt={profile.userName} />
+          <img className="rounded-full max-h-20 mx-auto" src={profile.userPhotoURL} alt={profile.userName} />
           <input type="file" accept="image/*" onChange={changePicture} />
       </div>
 

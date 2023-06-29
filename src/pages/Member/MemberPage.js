@@ -43,8 +43,8 @@ import { dataServiceGetGroups } from "../../services/dataService";
 // ]
 
 
-export const OrganizerPage = () => {
-  useTitle("Organizing My Groups and Events");
+export const MemberPage = () => {
+  useTitle("My Groups and Events");
 
   const uid = JSON.parse(sessionStorage.getItem("uid"));
   const [groups, setGroups] = useState([]);
@@ -54,7 +54,7 @@ export const OrganizerPage = () => {
   async function getGroups() {
     dataServiceGetGroups(uid)
     .then((data) => {
-          console.log("OrganizerPage getGroups");
+          console.log("MemberPage getGroups");
           console.log(data);
           setGroups(data);
         });    
@@ -72,7 +72,7 @@ export const OrganizerPage = () => {
       </>        
     :
       <div>
-        <button onClick={(e)=>setNewGroup(true)} className="mt-3 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm   w-full sm:w-auto px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+ New Group</button>
+        <button onClick={(e)=>setNewGroup(true)} className="mt-3 cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm   w-full sm:w-auto px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">New Group</button>
 
         {/* --- List of Groups  --- */}
         <div>
